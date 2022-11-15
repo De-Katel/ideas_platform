@@ -14,7 +14,8 @@ const Registration = () => {
         password: ''
     });
 
-    const fetchToRegistration = () => (
+    const fetchToRegistration = (e) => {
+        e.preventDefault();
         fetch('/api/v1/auth/users/', {
             method: 'POST',
             body: JSON.stringify(values),
@@ -22,7 +23,7 @@ const Registration = () => {
         })
             .then((data) => data.json())
             .then(data => { if ('id' in data) { navigate('/confirmation') } })
-    )
+    }
 
     return (
         <div className="auth">
@@ -31,30 +32,32 @@ const Registration = () => {
             <img className="left" src={left}></img>
             <img className="right" src={right}></img>
 
-            <input
-                className="auth_input"
-                placeholder="nick name"
-                onChange={e => setValues({ ...values, nick_name: e.target.value })}
-                value={values.nick_name}>
-            </input>
+            <form
+                className="form-registration"
+                onSubmit={fetchToRegistration}>
+                <input
+                    className="auth_input"
+                    placeholder="nick name"
+                    onChange={e => setValues({ ...values, nick_name: e.target.value })}
+                    value={values.nick_name}>
+                </input>
 
-            <input
-                className="auth_input"
-                placeholder="password"
-                type={'password'}
-                onChange={e => setValues({ ...values, password: e.target.value })}
-                value={values.password}>
-            </input>
-            <input
-                className="auth_input"
-                placeholder="e-mail"
-                type={'email'}
-                onChange={e => setValues({ ...values, email: e.target.value })}
-                value={values.email}>
-            </input>
-            <button
-                className="autorization reg_button"
-                onClick={fetchToRegistration}>Зарегистрироваться</button>
+                <input
+                    className="auth_input"
+                    placeholder="password"
+                    type={'password'}
+                    onChange={e => setValues({ ...values, password: e.target.value })}
+                    value={values.password}>
+                </input>
+                <input
+                    className="auth_input"
+                    placeholder="e-mail"
+                    type={'email'}
+                    onChange={e => setValues({ ...values, email: e.target.value })}
+                    value={values.email}>
+                </input>
+                <button className="autorization reg_button">Зарегистрироваться</button>
+            </form>
         </div >
 
     )

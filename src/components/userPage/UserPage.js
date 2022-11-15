@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
+import fon from '../../images/fon.png';
+
 import './UserPage.css'
 
 
@@ -18,7 +20,8 @@ const UserPage = () => {
     })
 
     return (
-        <section>
+        <section className="user_page_section">
+            <img className="fon" src={fon}></img>
             <div className="black_ground"></div>
             <div className="user_page">
                 <div className="user_page_item">

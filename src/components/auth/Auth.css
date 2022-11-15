@@ -85,3 +85,8 @@
 .reg_button{
     margin-top: 43px;
 }
+
+.auth_form{
+    display: flex;
+    flex-direction: column;
+}

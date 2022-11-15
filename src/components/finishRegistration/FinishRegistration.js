@@ -68,7 +68,7 @@ const FinishRegistration = () => {
         }
 
         fetch(`/api/v1/profile/${id}/`, {
-            method: 'PUT',
+            method: 'PATCH',
             body: JSON.stringify(data),
             headers: { "content-type": "application/json" }
         })
@@ -90,13 +90,10 @@ const FinishRegistration = () => {
             border: 'none',
             cursor: 'pointer',
             color: '#5E6C84',
-            // width: '400px',
             borderRadius: '8px',
             backgroundColor: '#F5F5F5',
-            height: '48px',
             fontSize: '25px',
-            paddinLeft: '20px'
-            // marginTop: '8px',
+            paddinLeft: '20px'  
         }),
         placeholder: styles => ({
             ...styles,

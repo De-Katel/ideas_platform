@@ -15,7 +15,6 @@ function App() {
     dispatch(setStacks());
     dispatch(setCountry());
     dispatch(setAllIdeas());
-    dispatch(setMyIdeas(id))
   }, [])
 
   return (

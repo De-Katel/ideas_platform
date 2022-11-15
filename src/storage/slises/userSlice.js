@@ -1,9 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  token: JSON.parse(sessionStorage.getItem('token')) || null,
-  id: JSON.parse(sessionStorage.getItem('id')) || null,
-  user: JSON.parse(sessionStorage.getItem('userLCT')) || {
+  token: null,
+  id: null,
+  isError: false,
+  errorMessege: '',
+  user: {
     nickName: null,
     role: null,
     fullName: null,
@@ -81,7 +83,7 @@ export const fetchUserData = createAsyncThunk(
 
 export const fetchUserLogin = createAsyncThunk(
   'user/fetchUserLogin',
-  async ([password, email]) => {
+  async ([password, email], { dispatch }) => {
 
     const response = await fetch('/api/v1/auth/token/login/', {
       method: 'POST',
@@ -91,12 +93,18 @@ export const fetchUserLogin = createAsyncThunk(
       }),
       headers: { "content-type": "application/json" }
     })
-      .then((data) => data.json())
-      .then((data) => {
-        sessionStorage.setItem('token', JSON.stringify(data.auth_token))
-        sessionStorage.setItem('id', JSON.stringify(data.id))
-        return data
+      .then((res) => {
+        return res.json()
       })
+      .then((data) => {
+        if (!('auth_token' in data)) {
+          dispatch(showServerResponse(data))
+        } else {
+          return data
+        }
+      })
+
+
     return response;
   }
 );
@@ -109,30 +117,71 @@ export const userSlice = createSlice({
     logOut: (state) => {
       state.token = null;
       state.id = null;
-      state.user = null;
+      state.isError = false;
+      state.user = {
+        nickName: null,
+        role: null,
+        fullName: null,
+        dateofbirth: null,
+        country: null,
+        citizenship: null,
+        gender: null,
+        email: null,
+        agreement: null,
+        education: null,
+        employment: null,
+        experience: null,
+        achievements: null,
+        profession: null,
+        stack: null,
+        roleInCommand: null,
+        command: null,
+        status: null
+      }
+    },
+
+    isErrorReset: (state) => {
+      state.isError = false;
     },
 
     setUser: (state, action) => {
       state.user = action.payload;
     },
+    showServerResponse: (state, action) => {
+      state.isError = true;
+      state.errorMessege = Object.values(action.payload)[0][0]
+    }
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserLogin.pending, (state) => {
+      // .addCase(fetchUserLogin.pending, (state) => {
+
+      // })
+      .addCase(fetchUserLogin.rejected, (state) => {
+        state.isError = true;
+        state.errorMessege = 'Ошибка сервера'
 
       })
       .addCase(fetchUserLogin.fulfilled, (state, action) => {
+        if (!('auth_token' in action.payload)) return
+
         state.token = action.payload.auth_token;
         state.id = action.payload.id;
+      })
+      .addCase(fetchUserData.rejected, (state) => {
+        state.errorMessege = 'Такой пользователь не найден'
+        state.isError = true;
+        // state.token = null;
       })
       .addCase(fetchUserData.fulfilled, (state, action) => {
         state.user = action.payload;
       })
+
   },
 });
 
-export const { setUser, logOut } = userSlice.actions;
+export const { setUser, logOut, isErrorReset, showServerResponse } = userSlice.actions;
 
 // export const selectCount = (state) => state.counter.value;
 

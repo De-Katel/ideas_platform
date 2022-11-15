@@ -1,5 +1,5 @@
 .black_ground {
-    height: 275px;
+    height: 316px;
     background-color: black;
 }
 
@@ -14,6 +14,8 @@ display: flex;
 flex-direction: column;
 align-items: center;
 margin-top: -235px;
+z-index: 3;
+
 
 }
 .user_page_item>div {
@@ -21,7 +23,7 @@ margin-top: -235px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 110px 45px 0 45px;
+    padding: 110px 41px 0 41px;
     border: 3px black solid;
     height: 390px;
   
@@ -46,4 +48,14 @@ text-align: center;
 .user-page-bitton{
 margin-top: 30px;
     width: 70%;
+}
+
+.fon{
+    position: absolute;
+    left: 0;
+    top: 250px;
+}
+
+.user_page_section{
+    position: relative;
 }

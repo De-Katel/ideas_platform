@@ -79,14 +79,15 @@ const Header = () => {
     return (
         <header>
             <div className="header">
+
+                <Link className="link" to={'/user_page'}>
+                    <div className="logo">
+                        <div style={{ width: '42px', border: '1px #000 solid', background: '#000' }} ></div>
+                        <div style={{ width: '83px', marginTop: '9px', background: '#000', border: '1px #000 solid' }} ></div>
+                        SPACE DREAMS
+                    </div>
+                </Link>
                 <div className="nav_wrap">
-                    <Link className="link" to={'/user_page'}>
-                        <div className="logo">
-                            <div style={{ width: '42px', border: '1px #000 solid', background: '#000' }} ></div>
-                            <div style={{ width: '83px', marginTop: '9px', background: '#000', border: '1px #000 solid' }} ></div>
-                            SPACE DREAMS
-                        </div>
-                    </Link>
                     <nav>
                         <ul className="nav_header">
                             <Link className="link" to={token ? '/feed' : '/auth'}>
@@ -100,25 +101,24 @@ const Header = () => {
                             </Link>
                         </ul>
                     </nav>
+
+                    {!token ?
+                        (location.pathname === '/') && <Link className="entrance" to={'/auth'}>
+                            Войти
+                        </Link>
+                        :
+                        <div style={{ position: 'relative', width: '226px' }}>
+
+                            <img className="img_head" src={search}></img>
+                            <img className="img_head" src={messege}></img>
+                            <img
+                                className="img_head"
+                                src={quit}
+                                onClick={handleClick}></img>
+
+                            <PopoverMy />
+                        </div>}
                 </div>
-
-
-                {!token ?
-                    (location.pathname === '/') && <Link className="entrance" to={'/auth'}>
-                        Войти
-                    </Link>
-                    :
-                    <div style={{ position: 'relative', width: '226px' }}>
-
-                        <img className="img_head" src={search}></img>
-                        <img className="img_head" src={messege}></img>
-                        <img
-                            className="img_head"
-                            src={quit}
-                            onClick={handleClick}></img>
-
-                        <PopoverMy />
-                    </div>}
             </div>
         </header>
     )

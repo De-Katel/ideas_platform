@@ -11,35 +11,35 @@ import Profile from "../profile/Profile";
 import IdeasFeed from "../ideasFeed/IdeasFeed";
 import MyIdeas from "../myIdeas/MyIdeas";
 import Project from "../project/Project";
+import Error from "../error/Error";
 
 import './Main.css'
-import BriefIdea from "../briefIdea/BriefIdea";
 import FullIdea from "../fullIdea/FullIdea";
+import { useSelector } from "react-redux";
 
 
 
 const Main = () => {
+
+    const isError = useSelector((state) => state.user.isError)
+
     return (
-        <main >
+        !isError ? <main >
             <Routes>
                 <Route path='/' element={<Lending />} />
                 <Route path='/user_page' element={<UserPage />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/feed" element={<IdeasFeed />} />
-
                 <Route path="/ideas" element={<MyIdeas />} />
-
-
-                <Route path=":cardId" element={<FullIdea/>} />
-
-
+                <Route path=":cardId" element={<FullIdea />} />
                 <Route path="/project" element={<Project />} />
                 <Route path="/registration" element={<Registration />} />
                 <Route path="/finish_registration" element={<FinishRegistration />} />
                 <Route path="/confirmation" element={<Confirmation />} />
             </Routes>
         </main>
+            : <Error />
     )
 }
 

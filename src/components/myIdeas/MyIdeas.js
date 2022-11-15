@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from 'react-select';
 
-import heed from '../../images/heed.png';
-import { newMyIdea, setMyIdeas, setAllIdeas } from "../../storage/slises/dataSlise";
+import ideahed from '../../images/ideahed.png';
+import menLe from '../../images/menLe.png';
+import menRe from '../../images/menRe.png';
+
+import { setMyIdeas, setAllIdeas } from "../../storage/slises/dataSlise";
 import BriefIdea from "../briefIdea/BriefIdea";
 
 import './MyIdeas.css'
@@ -13,6 +16,11 @@ const MyIdeas = () => {
 
     const id = useSelector(state => state.user.id)
     const { stacks, myIdeas } = useSelector((state) => state.data)
+    const descRef = useRef(null)
+
+    useEffect(() => {
+        dispatch(setMyIdeas(id));
+    }, [])
 
     const dispatch = useDispatch()
 
@@ -21,7 +29,7 @@ const MyIdeas = () => {
         name: '',
         description: ''
     })
-
+    const [showAdd, setShowAdd] = useState(false)
     const handleClick = () => {
         const newIdea = {
             author: id,
@@ -31,38 +39,41 @@ const MyIdeas = () => {
 
         }
 
-        fetch('/api/v1/user_ideas/', {
-            method: 'POST',
-            body: JSON.stringify(newIdea),
-            headers: { "content-type": "application/json" }
-        })
-            .then(() => {
-                dispatch(setAllIdeas())
-                    .then(() => { dispatch(setMyIdeas(id)) })
-
+        if (newIdea.description && newIdea.name && newIdea.stack) {
+            fetch('/api/v1/user_ideas/', {
+                method: 'POST',
+                body: JSON.stringify(newIdea),
+                headers: { "content-type": "application/json" }
             })
+                .then(() => {
+                    dispatch(setAllIdeas())
+                        .then(() => { dispatch(setMyIdeas(id)) })
 
-        setUserData({
-            stack: [{ value: '', label: '' }],
-            name: '',
-            description: ''
-        })
+                });
 
 
+            setUserData({
+                stack: [],
+                name: '',
+                description: ''
+            });
+
+            setShowAdd(false);
+
+        }
     }
 
     const styles = {
         control: styles => ({
             ...styles,
             outline: 'none',
-            padding: '4px',
-            // border: 'none',
+            padding: '20px',
+            marginTop: '10px',
+            border: '1px black solid',
             cursor: 'pointer',
             color: '#5E6C84',
-            // width: '70%',
             borderRadius: '8px',
             backgroundColor: '#F5F5F5',
-            height: '48px',
             fontSize: '18px',
             paddinLeft: '20px'
 
@@ -100,35 +111,44 @@ const MyIdeas = () => {
                     <BriefIdea id={item.id} />
                 </Link>
             </li>)
+
     })
+
     return (
 
-        <div>
+        <div style={{ position: 'relative' }}>
+            <img className="menLe" src={menLe}></img>
+            <img className="menRe" src={menRe}></img>
             <div className="feed">
-                <div className="black_feed"> <h2>Мои идеи</h2><img className="heed" src={heed}></img></div>
-                <ul>
+                <div className="marg"> <h2>Мои идеи</h2><img className="heed" src={ideahed}></img></div>
+                {list.length ? <ul className="my_ideas_ul">
                     {list}
                 </ul>
+                    : <h1>Вы пока не создали ни одной идеи</h1>}
             </div>
 
-            <div className="addIdea">
+            {showAdd ? <div className="addIdea">
                 <h3>Добавить идею</h3>
                 Название:
                 <input
+                    maxLength={128}
                     value={userData.name}
                     onChange={(e) => setUserData({ ...userData, name: e.target.value })}>
                 </input>
                 Описание:
                 <textarea
+                    ref={descRef}
+                    style={descRef.current && { height: `${descRef.current.scrollHeight}px` }}
                     className="dtextAreaMy"
                     value={userData.description}
                     onChange={(e) => setUserData({ ...userData, description: e.target.value })}>
                 </textarea>
-                Нобходимые навыки:
+                Необходимые навыки:
                 <Select
                     placeholder='Выберите необходимые навыки'
                     styles={styles}
                     defaultValue={userData.stack}
+                    value={userData.stack}
                     onChange={(e) => setUserData({ ...userData, stack: e })}
                     className="basic-single"
                     isMulti
@@ -138,9 +158,20 @@ const MyIdeas = () => {
                     className="addButtin"
                     onClick={handleClick}
                 > Добавить идею</button>
+                <span
+                    className="back"
+                    onClick={() => setShowAdd(false)}
+                >назад</span>
 
 
             </div>
+                : <div className="but-wrap">
+                    <button
+                        className="create_idea"
+                        onClick={() => setShowAdd(true)}>
+                        Создать идею
+                    </button>
+                </div>}
         </div>
 
 
